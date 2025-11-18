@@ -1,73 +1,225 @@
-function App() {
+import { useEffect, useMemo, useState } from 'react'
+import Navbar from './components/Navbar'
+import Hero from './components/Hero'
+import Timeline from './components/Timeline'
+import Projects from './components/Projects'
+import Services from './components/Services'
+import Process from './components/Process'
+import Contact from './components/Contact'
+import Footer from './components/Footer'
+
+const dictionary = {
+  cz: {
+    nav: {
+      home: 'Domů',
+      about: 'O mně',
+      projects: 'Projekty',
+      services: 'Služby',
+      process: 'Proces',
+      contact: 'Kontakt',
+    },
+    hero: {
+      title: 'Jsem Matěj Boška.',
+      subtitle:
+        'Stavím malé, funkční a moderní weby pro podnikatele a malé firmy. Dělám návrh, UX, UI i implementaci. Rychle, jednoduše a bez zbytečných řečí.',
+      ctaPrimary: 'Domluvit web',
+      ctaSecondary: 'Podívat se na projekty',
+    },
+    about: {
+      timeline: [
+        {
+          period: '2024 – současnost',
+          title: 'VŠE – Fakulta informatiky a statistiky',
+          desc: 'Aplikovaná informatika (Bc.)',
+        },
+        {
+          period: '2024 – současnost',
+          title: 'Web builder na volné noze',
+          desc: 'Tvorba webů, UX/UI, návrhy, redesigny, analýzy, struktura obsahu, implementace.',
+        },
+        {
+          period: '2024 – 2025',
+          title: 'Projekt veteranskoda.cz pro Marka Šmejckého',
+          desc: 'Kompletní návrh, UX/UI, struktura, vývoj, optimalizace.',
+        },
+        {
+          period: '2025 – současnost',
+          title: 'Projekt pro Lukáše Kuklu (probíhá)',
+          desc: 'Návrh webu, obsah, struktura, implementace.',
+        },
+        {
+          period: '2020 – 2024',
+          title: 'SPŠE Ječná – maturita',
+          desc: 'IT zaměření, technické základy, programování, webové technologie.',
+        },
+        {
+          period: 'Koníčky',
+          title: 'Bodybuilding a gym',
+          desc: 'Dlouhodobý cíl stát se IFBB Pro.',
+        },
+      ],
+    },
+    projects: {
+      list: [
+        {
+          name: 'veteranskoda.cz – kompletní web',
+          status: 'Hotovo',
+          desc: 'Návrh, obsah, UX/UI, vývoj, testování.',
+        },
+        {
+          name: 'Lukáš Kukla – nový web (probíhá)',
+          status: 'Probíhá',
+          desc: 'Návrh, struktura, UI/UX, implementace.',
+        },
+      ],
+    },
+    services: {
+      items: [
+        'Kompletní web na míru',
+        'UX/UI návrhy',
+        'Redesign webu',
+        'Informační architektura',
+        'Základní copywriting',
+        'Optimalizace pro Google Maps (lokální viditelnost)',
+      ],
+    },
+    process: {
+      steps: [
+        'Krátký call',
+        'Návrh struktury',
+        'UX/UI design',
+        'Implementace',
+        'Testování',
+        'Předání projektu',
+      ],
+    },
+    contact: {
+      title: 'Chceš nový web? Ozvi se.',
+      subtitle: 'matej0boska@gmail.com',
+    },
+  },
+  en: {
+    nav: {
+      home: 'Home',
+      about: 'About',
+      projects: 'Projects',
+      services: 'Services',
+      process: 'Process',
+      contact: 'Contact',
+    },
+    hero: {
+      title: 'I’m Matěj Boška.',
+      subtitle:
+        'I build small, clean and functional websites for entrepreneurs and small businesses. I handle design, UX, UI and implementation. Fast and straightforward.',
+      ctaPrimary: 'Book a website',
+      ctaSecondary: 'View projects',
+    },
+    about: {
+      timeline: [
+        {
+          period: '2024 – present',
+          title: 'University of Economics in Prague – Faculty of Informatics and Statistics',
+          desc: 'Applied Informatics (Bachelor)',
+        },
+        {
+          period: '2024 – present',
+          title: 'Freelance web builder',
+          desc: 'Complete web creation, UX/UI design, redesigns, content structure, implementation.',
+        },
+        {
+          period: '2024 – 2025',
+          title: 'Veteranskoda.cz project for Marek Šmejcký',
+          desc: 'Full design, UX/UI, structure, development.',
+        },
+        {
+          period: '2025 – present',
+          title: 'Project for Lukáš Kukla (ongoing)',
+          desc: 'Draft, structure, design and implementation.',
+        },
+        {
+          period: '2020 – 2024',
+          title: 'SPŠE Ječná – Graduation',
+          desc: 'IT specialization, programming, web foundations.',
+        },
+        {
+          period: 'Hobbies',
+          title: 'Bodybuilding and gym',
+          desc: 'Long-term goal to become IFBB Pro.',
+        },
+      ],
+    },
+    projects: {
+      list: [
+        {
+          name: 'veteranskoda.cz – full website',
+          status: 'Completed',
+          desc: 'Design, content, UX/UI, development.',
+        },
+        {
+          name: 'Lukáš Kukla – new website (in progress)',
+          status: 'In progress',
+          desc: 'Structure, design, UX/UI, implementation.',
+        },
+      ],
+    },
+    services: {
+      items: [
+        'Complete custom websites',
+        'UX/UI design',
+        'Website redesign',
+        'Information architecture',
+        'Basic copywriting',
+        'Local SEO for Google Maps',
+      ],
+    },
+    process: {
+      steps: [
+        'Short call',
+        'Structure proposal',
+        'UX/UI design',
+        'Implementation',
+        'Testing',
+        'Delivery',
+      ],
+    },
+    contact: {
+      title: 'Want a new website? Get in touch.',
+      subtitle: 'matej0boska@gmail.com',
+    },
+  },
+}
+
+export default function App() {
+  const [lang, setLang] = useState('cz')
+
+  useEffect(() => {
+    // Prefer user choice if previously set
+    const saved = localStorage.getItem('lang')
+    if (saved === 'cz' || saved === 'en') setLang(saved)
+    else setLang('cz')
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('lang', lang)
+  }, [lang])
+
+  const t = useMemo(() => dictionary[lang], [lang])
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Subtle pattern overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_50%)]"></div>
-
-      <div className="relative min-h-screen flex items-center justify-center p-8">
-        <div className="max-w-2xl w-full">
-          {/* Header with Flames icon */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center mb-6">
-              <img
-                src="/flame-icon.svg"
-                alt="Flames"
-                className="w-24 h-24 drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]"
-              />
-            </div>
-
-            <h1 className="text-5xl font-bold text-white mb-4 tracking-tight">
-              Flames Blue
-            </h1>
-
-            <p className="text-xl text-blue-200 mb-6">
-              Build applications through conversation
-            </p>
-          </div>
-
-          {/* Instructions */}
-          <div className="bg-slate-800/50 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-8 shadow-xl mb-6">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                1
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Describe your idea</h3>
-                <p className="text-blue-200/80 text-sm">Use the chat panel on the left to tell the AI what you want to build</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                2
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Watch it build</h3>
-                <p className="text-blue-200/80 text-sm">Your app will appear in this preview as the AI generates the code</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                3
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Refine and iterate</h3>
-                <p className="text-blue-200/80 text-sm">Continue the conversation to add features and make changes</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center">
-            <p className="text-sm text-blue-300/60">
-              No coding required • Just describe what you want
-            </p>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-slate-950 text-slate-200">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.06),transparent_40%)]" />
+      <Navbar lang={lang} setLang={setLang} t={t} />
+      <main>
+        <Hero t={{
+          hero: t.hero,
+        }} />
+        <Timeline t={t} />
+        <Projects t={t} />
+        <Services t={t} />
+        <Process t={t} />
+        <Contact t={t} />
+      </main>
+      <Footer t={t} lang={lang} setLang={setLang} />
     </div>
   )
 }
-
-export default App
