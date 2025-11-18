@@ -1,7 +1,7 @@
 export default function Timeline({ t }) {
   const items = t.about.timeline
   return (
-    <section id="about" className="relative mx-auto max-w-6xl px-4 py-16">
+    <section id="about" data-reveal className="relative mx-auto max-w-6xl px-4 py-16">
       <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">{t.nav.about}</h2>
       <div className="mt-10 relative">
         <div className="absolute left-1/2 -translate-x-1/2 h-full w-px bg-slate-800" />

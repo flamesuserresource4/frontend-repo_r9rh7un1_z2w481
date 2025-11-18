@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
 import { Mail, Phone, Globe } from 'lucide-react'
 
 export default function Navbar({ lang, setLang, t }) {
@@ -14,14 +14,30 @@ export default function Navbar({ lang, setLang, t }) {
     [t]
   )
 
+  const handleAnchorClick = useCallback((e, href) => {
+    if (!href?.startsWith('#')) return
+    e.preventDefault()
+    const id = href.slice(1)
+    const target = document.getElementById(id)
+    if (target) {
+      // Use scrollIntoView; sections use scroll-mt to offset fixed header
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [])
+
   return (
     <header className="fixed top-0 inset-x-0 z-50 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur supports-[backdrop-filter]:bg-slate-950/60">
       <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-3">
-        <a href="#home" className="font-semibold tracking-tight text-white text-sm sm:text-base">Matěj Boška</a>
+        <a href="#home" onClick={(e) => handleAnchorClick(e, '#home')} className="font-semibold tracking-tight text-white text-sm sm:text-base">Matěj Boška</a>
 
         <nav className="hidden md:flex items-center gap-6 text-slate-200">
           {navItems.map((item) => (
-            <a key={item.key} href={item.href} className="text-sm hover:text-white transition-colors">
+            <a
+              key={item.key}
+              href={item.href}
+              onClick={(e) => handleAnchorClick(e, item.href)}
+              className="text-sm hover:text-white transition-colors"
+            >
               {item.label}
             </a>
           ))}
@@ -63,7 +79,12 @@ export default function Navbar({ lang, setLang, t }) {
       <div className="md:hidden border-t border-slate-800">
         <div className="mx-auto max-w-6xl px-4 py-2 flex items-center justify-between overflow-x-auto no-scrollbar">
           {navItems.map((item) => (
-            <a key={item.key} href={item.href} className="text-sm text-slate-300 hover:text-white whitespace-nowrap px-2 py-1">
+            <a
+              key={item.key}
+              href={item.href}
+              onClick={(e) => handleAnchorClick(e, item.href)}
+              className="text-sm text-slate-300 hover:text-white whitespace-nowrap px-2 py-1"
+            >
               {item.label}
             </a>
           ))}

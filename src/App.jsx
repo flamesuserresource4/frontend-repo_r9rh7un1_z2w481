@@ -65,6 +65,13 @@ const dictionary = {
           name: 'veteranskoda.cz – kompletní web',
           status: 'Hotovo',
           desc: 'Návrh, obsah, UX/UI, vývoj, testování.',
+          href: 'https://veteranskoda.cz',
+        },
+        {
+          name: 'sarecka.cz – kompletní web',
+          status: 'Hotovo',
+          desc: 'Návrh, vývoj, optimalizace a nasazení.',
+          href: 'https://sarecka.cz',
         },
         {
           name: 'Lukáš Kukla – nový web (probíhá)',
@@ -154,6 +161,13 @@ const dictionary = {
           name: 'veteranskoda.cz – full website',
           status: 'Completed',
           desc: 'Design, content, UX/UI, development.',
+          href: 'https://veteranskoda.cz',
+        },
+        {
+          name: 'sarecka.cz – full website',
+          status: 'Completed',
+          desc: 'Design, development, optimization and deployment.',
+          href: 'https://sarecka.cz',
         },
         {
           name: 'Lukáš Kukla – new website (in progress)',
@@ -193,7 +207,6 @@ export default function App() {
   const [lang, setLang] = useState('cz')
 
   useEffect(() => {
-    // Prefer user choice if previously set
     const saved = localStorage.getItem('lang')
     if (saved === 'cz' || saved === 'en') setLang(saved)
     else setLang('cz')
@@ -205,14 +218,35 @@ export default function App() {
 
   const t = useMemo(() => dictionary[lang], [lang])
 
+  // account for fixed navbar offset when using anchor navigation
+  useEffect(() => {
+    const headerHeight = 72
+    const ids = ['home','about','projects','services','process','contact']
+    ids.forEach(id => {
+      const el = document.getElementById(id)
+      if (el) el.style.scrollMarginTop = `${headerHeight}px`
+    })
+  }, [])
+
+  // intersection observer for reveal-on-scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('in-view')
+      })
+    }, { threshold: 0.12 })
+
+    const els = document.querySelectorAll('[data-reveal]')
+    els.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.06),transparent_40%)]" />
       <Navbar lang={lang} setLang={setLang} t={t} />
       <main>
-        <Hero t={{
-          hero: t.hero,
-        }} />
+        <Hero t={{ hero: t.hero }} />
         <Timeline t={t} />
         <Projects t={t} />
         <Services t={t} />

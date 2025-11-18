@@ -2,7 +2,7 @@ import Spline from '@splinetool/react-spline'
 
 export default function Hero({ t }) {
   return (
-    <section id="home" className="relative pt-28 sm:pt-32 md:pt-36">
+    <section id="home" data-reveal className="relative pt-28 sm:pt-32 md:pt-36">
       <div className="absolute inset-0">
         <div className="h-[520px] sm:h-[560px] md:h-[640px] lg:h-[700px]">
           <Spline scene="https://prod.spline.design/VJLoxp84lCdVfdZu/scene.splinecode" style={{ width: '100%', height: '100%' }} />

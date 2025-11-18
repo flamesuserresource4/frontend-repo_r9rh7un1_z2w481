@@ -1,6 +1,6 @@
 export default function Contact({ t }) {
   return (
-    <section id="contact" className="relative mx-auto max-w-6xl px-4 py-16">
+    <section id="contact" data-reveal className="relative mx-auto max-w-6xl px-4 py-16">
       <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>
